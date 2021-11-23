@@ -1,3 +1,5 @@
+#include "netconf_agent.hpp"
+
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -75,6 +77,8 @@ Action MapStringToAction(const std::string& command_name) {
 }
 
 int main() {
+  NetConfAgent netconf_agent("mobile_network");
+  netconf_agent.SubscribeForModelChanges("mobile_network");
   std::string command_line;
   std::string exit_command = "exit";
   Command command;
