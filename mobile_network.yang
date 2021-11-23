@@ -1,0 +1,34 @@
+module mobile_network {
+  namespace "http://mobile-network.com";
+  prefix "mobile-network";
+
+  container subscribers {
+    config true;
+
+    list subscriber {
+      key "number";
+
+      leaf number {
+        type string;
+      }
+
+      leaf userName {
+        config false;
+        type string;
+      }
+
+      leaf incomingNumber {
+        type string;
+      }
+
+      leaf state {
+        type enumeration {
+          enum "active";
+          enum "busy";
+          enum "idle";
+        }
+        default "active";
+      }
+    }
+  }
+}
