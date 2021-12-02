@@ -78,7 +78,10 @@ Action MapStringToAction(const std::string& command_name) {
 
 int main() {
   NetConfAgent netconf_agent("mobile_network");
-  netconf_agent.SubscribeForModelChanges("mobile_network");
+  netconf_agent.subscribeForModelChanges("mobile_network");
+  std::string value;
+  netconf_agent.fetchData("/mobile_network:subscribers/subscriber[number='911']/number", value);
+  std::cout << "Fetched value: " << value << '\n';
   std::string command_line;
   std::string exit_command = "exit";
   Command command;

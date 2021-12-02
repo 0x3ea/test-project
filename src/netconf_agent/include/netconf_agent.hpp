@@ -6,17 +6,19 @@
 #include <sysrepo-cpp/Subscription.hpp>
 
 #include <optional>
+#include <string>
 
 class NetConfAgent {
  public:
-  NetConfAgent(const char* module_name);
+  NetConfAgent(const std::string& module_name);
 
-  bool SubscribeForModelChanges(const char* module_name);
+  bool subscribeForModelChanges(const std::string& xpath);
+  bool fetchData(const std::string& xpath, std::string& value);
 
  private:
-  sysrepo::Connection conn;
-  sysrepo::Session sess;
-  std::optional<sysrepo::Subscription> sub;
+  sysrepo::Connection _conn;
+  sysrepo::Session _sess;
+  std::optional<sysrepo::Subscription> _sub;
 };
 
 #endif  // MOBILE_NETWORK_NETCONF_AGENT_INCLUDE_HPP_
