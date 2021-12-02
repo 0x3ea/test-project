@@ -27,3 +27,8 @@ bool NetConfAgent::fetchData(const std::string& xpath, std::string& value) {
   value = term.valueStr();
   return true;
 }
+
+bool NetConfAgent::changeData(const std::string& xpath, const std::string& value) {
+  _sess.setItem(xpath.c_str(), value.c_str());
+  return true;
+}

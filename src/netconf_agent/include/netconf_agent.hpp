@@ -14,6 +14,7 @@ class NetConfAgent {
 
   bool subscribeForModelChanges(const std::string& xpath);
   bool fetchData(const std::string& xpath, std::string& value);
+  bool changeData(const std::string& xpath, const std::string& value);
 
  private:
   sysrepo::Connection _conn;
