@@ -1,4 +1,4 @@
-#include "netconf_agent.hpp"
+#include "mobile_client.hpp"
 
 #include <iostream>
 #include <sstream>
@@ -77,14 +77,14 @@ Action MapStringToAction(const std::string& command_name) {
 }
 
 int main() {
-  NetConfAgent netconf_agent("mobile_network");
-  netconf_agent.subscribeForModelChanges("mobile_network");
-  std::string value;
-  netconf_agent.fetchData("/mobile_network:subscribers/subscriber[number='911']/number", value);
-  std::cout << "Fetched value: " << value << '\n';
-  netconf_agent.changeData("/mobile_network:subscribers/subscriber[number='910']/number", "910");
-  netconf_agent.fetchData("/mobile_network:subscribers/subscriber[number='910']/number", value);
-  std::cout << "Set value: " << value << '\n';
+  // NetConfAgent netconf_agent("mobile_network");
+  // netconf_agent.subscribeForModelChanges("mobile_network");
+  // std::string value;
+  // netconf_agent.fetchData("/mobile_network:subscribers/subscriber[number='911']/number", value);
+  // std::cout << "Fetched value: " << value << '\n';
+  // netconf_agent.changeData("/mobile_network:subscribers/subscriber[number='910']/number", "910");
+  // netconf_agent.fetchData("/mobile_network:subscribers/subscriber[number='910']/number", value);
+  // std::cout << "Set value: " << value << '\n';
   std::string command_line;
   std::string exit_command = "exit";
   Command command;

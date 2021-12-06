@@ -5,10 +5,9 @@
 #include <iostream>
 #include <string>
 
-NetConfAgent::NetConfAgent(const std::string& module_name)
+NetConfAgent::NetConfAgent()
     : _conn(),
       _sess(_conn.sessionStart()) {
-  // _sess.copyConfig(sysrepo::Datastore::Startup, module_name.c_str());
 }
 
 bool NetConfAgent::subscribeForModelChanges(const std::string& xpath) {

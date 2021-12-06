@@ -10,7 +10,7 @@
 
 class NetConfAgent {
  public:
-  NetConfAgent(const std::string& module_name);
+  NetConfAgent();
 
   bool subscribeForModelChanges(const std::string& xpath);
   bool fetchData(const std::string& xpath, std::string& value);

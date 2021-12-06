@@ -1,8 +1,8 @@
 src = 'main.cpp'
 
-subdir('netconf_agent')
+subdir('mobile_client')
 
 executable('mobile_network',
            sources : src,
-           dependencies : netconf_agent_lib_dep,
+           dependencies : mobile_client_lib_dep,
 )
