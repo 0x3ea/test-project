@@ -6,14 +6,19 @@
 
 #include "netconf_agent.hpp"
 
+class NetConfAgent;
+
 class MobileClient {
  public:
-  MobileClient();
+  MobileClient(const std::string& module_name);
+
+  void handleModuleChange(const std::string& xpath, const std::string& value);
+  bool registerSubscriber(const std::string& number);
 
  private:
   std::unique_ptr<NetConfAgent> _netconf_agent;
-  std::string _subscriber_name;
-  std::string _subscriber_number;
+  bool _is_registered;
+  std::string _number;
   std::string _status;
 };
 

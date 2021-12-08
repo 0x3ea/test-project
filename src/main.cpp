@@ -21,7 +21,7 @@ enum class Action {
   Error,
 };
 
-bool Register(const std::string& subscriber_number) {
+bool registerSubscriber(const std::string& subscriber_number) {
   std::cout << "Register(" << subscriber_number << ");\n";
   return true;
 }
@@ -77,18 +77,11 @@ Action MapStringToAction(const std::string& command_name) {
 }
 
 int main() {
-  // NetConfAgent netconf_agent("mobile_network");
-  // netconf_agent.subscribeForModelChanges("mobile_network");
-  // std::string value;
-  // netconf_agent.fetchData("/mobile_network:subscribers/subscriber[number='911']/number", value);
-  // std::cout << "Fetched value: " << value << '\n';
-  // netconf_agent.changeData("/mobile_network:subscribers/subscriber[number='910']/number", "910");
-  // netconf_agent.fetchData("/mobile_network:subscribers/subscriber[number='910']/number", value);
-  // std::cout << "Set value: " << value << '\n';
   std::string command_line;
   std::string exit_command = "exit";
   Command command;
   Action action;
+  MobileClient mobile_client("mobile_network");
   while (command.name != exit_command) {
     std::cout << "mobile-network > ";
     std::getline(std::cin, command_line);
@@ -96,7 +89,7 @@ int main() {
     action = MapStringToAction(command.name);
     switch (action) {
       case Action::Register: {
-        Register(command.argument);
+        mobile_client.registerSubscriber(command.argument);
         break;
       }
       case Action::Unregister: {
