@@ -6,6 +6,8 @@
 
 #include "mobile_client.hpp"
 
+namespace MobileClient {
+
 NetConfAgent::NetConfAgent(const std::string& module_name)
     : _conn(),
       _sess(_conn.sessionStart()),
@@ -34,3 +36,5 @@ bool NetConfAgent::subscribeForModelChanges(const std::string& xpath, MobileClie
   _sub = _sess.onModuleChange(_module_name.c_str(), module_change_cb, xpath.c_str(), 0, sysrepo::SubscribeOptions::DoneOnly);
   return true;
 }
+
+}  // namespace MobileClient

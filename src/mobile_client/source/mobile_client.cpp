@@ -6,6 +6,8 @@
 
 #include "netconf_agent.hpp"
 
+namespace MobileClient {
+
 MobileClient::MobileClient(const std::string& module_name)
     : _netconf_agent(std::make_unique<NetConfAgent>(module_name)),
       _is_registered(false) {
@@ -27,3 +29,5 @@ bool MobileClient::registerSubscriber(const std::string& number) {
   std::cout << "Subscriber with number '" << number << "' has been successfully registered!\n";
   return true;
 }
+
+}  // namespace MobileClient

@@ -10,6 +10,8 @@
 
 #include "mobile_client.hpp"
 
+namespace MobileClient {
+
 class MobileClient;
 
 class NetConfAgent {
@@ -26,5 +28,7 @@ class NetConfAgent {
   std::optional<sysrepo::Subscription> _sub;
   std::string _module_name;
 };
+
+}  // namespace MobileClient
 
 #endif  // MOBILE_NETWORK_NETCONF_AGENT_INCLUDE_HPP_

@@ -6,9 +6,12 @@
 
 #include "netconf_agent.hpp"
 
+namespace MobileClient {
+
 class NetConfAgent;
 
 class MobileClient {
+
  public:
   MobileClient(const std::string& module_name);
 
@@ -21,5 +24,7 @@ class MobileClient {
   std::string _number;
   std::string _status;
 };
+
+}  // namespace MobileClient
 
 #endif  // MOBILE_NETWORK_MOBILE_CLIENT_INCLUDE_HPP_

@@ -81,7 +81,7 @@ int main() {
   std::string exit_command = "exit";
   Command command;
   Action action;
-  MobileClient mobile_client("mobile_network");
+  MobileClient::MobileClient mobile_client("mobile_network");
   while (command.name != exit_command) {
     std::cout << "mobile-network > ";
     std::getline(std::cin, command_line);
