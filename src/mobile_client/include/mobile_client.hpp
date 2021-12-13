@@ -11,7 +11,6 @@ namespace MobileClient {
 class NetConfAgent;
 
 class MobileClient {
-
  public:
   MobileClient(const std::string& module_name);
 
@@ -19,10 +18,12 @@ class MobileClient {
   bool registerSubscriber(const std::string& number);
 
  private:
+  std::string getPath(const std::string& xpath, const std::string& number);
+
   std::unique_ptr<NetConfAgent> _netconf_agent;
   bool _is_registered;
   std::string _number;
-  std::string _status;
+  std::string _state;
 };
 
 }  // namespace MobileClient

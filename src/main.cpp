@@ -4,6 +4,8 @@
 #include <sstream>
 #include <string>
 
+#include "path_constants.hpp"
+
 struct Command {
   std::string name;
   std::string argument;
@@ -81,7 +83,7 @@ int main() {
   std::string exit_command = "exit";
   Command command;
   Action action;
-  MobileClient::MobileClient mobile_client("mobile_network");
+  MobileClient::MobileClient mobile_client(kModuleName);
   while (command.name != exit_command) {
     std::cout << "mobile-network > ";
     std::getline(std::cin, command_line);
