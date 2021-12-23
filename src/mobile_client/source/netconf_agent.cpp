@@ -16,6 +16,7 @@ NetConfAgent::NetConfAgent(const std::string& module_name)
 
 bool NetConfAgent::changeData(const std::string& xpath, const std::string& value) {
   _sess.setItem(xpath.c_str(), value.c_str());
+  _sess.applyChanges();
   return true;
 }
 

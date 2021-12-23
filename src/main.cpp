@@ -103,7 +103,7 @@ int main() {
         break;
       }
       case Action::Call: {
-        Call(command.argument);
+        mobile_client.call(command.argument);
         break;
       }
       case Action::CallEnd: {
