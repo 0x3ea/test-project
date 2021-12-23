@@ -8,12 +8,16 @@ module mobile_network {
     list subscriber {
       key "number";
 
+      leaf userName {
+        config false;
+        type string;
+      }
+
       leaf number {
         type string;
       }
 
-      leaf userName {
-        config false;
+      leaf outgoingNumber {
         type string;
       }
 
@@ -21,13 +25,13 @@ module mobile_network {
         type string;
       }
 
-      leaf state {
+      leaf status {
         type enumeration {
-          enum "active";
-          enum "busy";
           enum "idle";
+          enum "busy";
+          enum "active";
         }
-        default "active";
+        default "idle";
       }
     }
   }
