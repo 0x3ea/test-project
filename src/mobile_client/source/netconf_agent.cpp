@@ -1,5 +1,6 @@
 #include "netconf_agent.hpp"
 
+#include <libyang-cpp/DataNode.hpp>
 #include <sysrepo-cpp/Session.hpp>
 
 #include <string>
@@ -30,7 +31,9 @@ bool NetConfAgent::fetchData(const std::string& xpath, std::string& value) {
 bool NetConfAgent::subscribeForModelChanges(const std::string& xpath, MobileClient& mobile_client) {
   sysrepo::ModuleChangeCb module_change_cb = [&mobile_client] (sysrepo::Session session, auto, auto, auto, auto, auto) -> sysrepo::ErrorCode {
     for (const auto& change : session.getChanges()) {
-      mobile_client.handleModuleChange(std::string{change.node.path()}, "value");
+      if (change.node.schema().nodeType() == libyang::NodeType::Leaf) {
+        mobile_client.handleModuleChange(std::string{change.node.path()}, std::string{change.node.asTerm().valueStr()});
+      }
     }
     return sysrepo::ErrorCode::Ok;
   };

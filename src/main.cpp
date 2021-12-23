@@ -107,11 +107,11 @@ int main() {
         break;
       }
       case Action::CallEnd: {
-        CallEnd();
+        mobile_client.callEnd();
         break;
       }
       case Action::Answer: {
-        Answer();
+        mobile_client.answer();
         break;
       }
       case Action::Reject: {

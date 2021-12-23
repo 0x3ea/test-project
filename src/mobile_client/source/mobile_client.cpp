@@ -22,12 +22,18 @@ bool MobileClient::answer() {
   }
   std::string callee_incoming_number_path = getPath(kIncomingNumberPath, _number);
   std::string callee_incoming_number;
-  _netconf_agent->fetchData(callee_incoming_number_path, callee_incoming_number)
+  _netconf_agent->fetchData(callee_incoming_number_path, callee_incoming_number);
   if (callee_incoming_number.empty()) {
     std::cout << "No incoming call.\n";
     return false;
   }
   std::string callee_status_path = getPath(kStatusPath, _number);
+  std::string callee_status;
+  _netconf_agent->fetchData(callee_status_path, callee_status);
+  if (callee_status == mapStatusToString(Status::Active)) {
+    std::cout << "Your call is already in progress.";
+    return false;
+  }
   std::string caller_status_path = getPath(kStatusPath, callee_incoming_number);
   _netconf_agent->changeData(callee_status_path, mapStatusToString(Status::Active));
   _netconf_agent->changeData(caller_status_path, mapStatusToString(Status::Active));
@@ -53,8 +59,14 @@ bool MobileClient::call(const std::string& number) {
     std::cout << "Subscriber with number '" << number << "' is busy at the moment. Please call later.\n";
     return false;
   }
-  std::string caller_outgoing_number_path = getPath(kOutgoingNumberPath, _number);
   std::string caller_status_path = getPath(kStatusPath, _number);
+  std::string caller_status;
+  _netconf_agent->fetchData(caller_status_path, caller_status);
+  if (caller_status == mapStatusToString(Status::Busy) || caller_status == mapStatusToString(Status::Active)) {
+    std::cout << "Your call is already in progress.";
+    return false;
+  }
+  std::string caller_outgoing_number_path = getPath(kOutgoingNumberPath, _number);
   std::string callee_incoming_number_path = getPath(kIncomingNumberPath, number);
   _netconf_agent->changeData(caller_outgoing_number_path, number);
   _netconf_agent->changeData(callee_incoming_number_path, _number);
@@ -63,19 +75,73 @@ bool MobileClient::call(const std::string& number) {
   return true;
 }
 
-void MobileClient::handleModuleChange(const std::string& xpath, const std::string& value) {
-  std::cout << "xpath: " << xpath << '\n';
-  std::cout << "value: " << value << '\n';
+bool MobileClient::callEnd() {
+  if (!_is_registered) {
+    std::cout << "You are not registered. Register before doing any other action.\n";
+    return false;
+  }
+  std::string subscriber_status_path = getPath(kStatusPath, _number);
+  std::string subscriber_status;
+  _netconf_agent->fetchData(subscriber_status_path, subscriber_status);
+  if (subscriber_status == mapStatusToString(Status::Idle) || subscriber_status == mapStatusToString(Status::Busy)) {
+    std::cout << "No active call to end.\n";
+    return false;
+  }
+  std::string subscriber_outgoing_number_path = getPath(kOutgoingNumberPath, _number);
+  std::string subscriber_incoming_number_path = getPath(kIncomingNumberPath, _number);
+  std::string subscriber_outgoing_number;
+  std::string subscriber_incoming_number;
+  _netconf_agent->fetchData(subscriber_outgoing_number_path, subscriber_outgoing_number);
+  _netconf_agent->fetchData(subscriber_incoming_number_path, subscriber_incoming_number);
+  if (!subscriber_outgoing_number.empty()) {
+    std::string callee_incoming_number_path = getPath(kIncomingNumberPath, subscriber_outgoing_number);
+    std::string callee_status_path = getPath(kStatusPath, subscriber_outgoing_number);
+    _netconf_agent->changeData(callee_incoming_number_path, "");
+    _netconf_agent->changeData(callee_status_path, mapStatusToString(Status::Idle));
+  }
+  if (!subscriber_incoming_number.empty()) {
+    std::string caller_outgoing_number_path = getPath(kOutgoingNumberPath, subscriber_incoming_number);
+    std::string caller_status_path = getPath(kStatusPath, subscriber_incoming_number);
+    _netconf_agent->changeData(caller_outgoing_number_path, "");
+    _netconf_agent->changeData(caller_status_path, mapStatusToString(Status::Idle));
+  }
+  _netconf_agent->changeData(subscriber_outgoing_number_path, "");
+  _netconf_agent->changeData(subscriber_incoming_number_path, "");
+  _netconf_agent->changeData(subscriber_status_path, mapStatusToString(Status::Idle));
+  return true;
+}
+
+bool MobileClient::handleModuleChange(const std::string& xpath, const std::string& value) {
+  if (xpath == getPath(kOutgoingNumberPath, _number) && !value.empty()) {
+    std::cout << "Calling '" << value << "'...\n";
+    return true;
+  }
+  if (xpath == getPath(kIncomingNumberPath, _number) && !value.empty()) {
+    std::cout << "\nIncoming call from '" << value << "'.\nPossible actions: answer, reject.\n\n";
+    return true;
+  }
+  if (xpath == getPath(kStatusPath, _number) && value == mapStatusToString(Status::Active)) {
+    std::cout << "\nCall is in progress...\nPossible actions: callEnd.\n\n";
+    return true;
+  }
+  if (xpath == getPath(kStatusPath, _number) && value == mapStatusToString(Status::Idle)) {
+    std::cout << "\nCall ended.\n";
+    return true;
+  }
 }
 
 bool MobileClient::registerSubscriber(const std::string& number) {
-  std::string subscriber_path = getPath(kSubscriberPath, number);
-  std::string subscriber_status_path = getPath(kStatusPath, number);
-  std::string tmp;
-  if (_netconf_agent->fetchData(subscriber_path, tmp)) {
-    std::cout << "Subscriber with number '" << number << "' is already registered.\n";
+  if (_is_registered) {
+    std::cout << "You are already registered.\n";
     return false;
   }
+  std::string subscriber_status_path = getPath(kStatusPath, number);
+  std::string tmp;
+  if (_netconf_agent->fetchData(subscriber_status_path, tmp)) {
+    std::cout << "Subscriber with number '" << number << "' is already registered. Choose another number.\n";
+    return false;
+  }
+  std::string subscriber_path = getPath(kSubscriberPath, number);
   _netconf_agent->changeData(subscriber_path, number);
   _is_registered = true;
   _number = number;
