@@ -15,6 +15,7 @@ class MobileClient {
  public:
   MobileClient(const std::string& module_name);
 
+  bool answer();
   bool call(const std::string& number);
   void handleModuleChange(const std::string& xpath, const std::string& value);
   bool registerSubscriber(const std::string& number);

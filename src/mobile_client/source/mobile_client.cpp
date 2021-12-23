@@ -15,6 +15,25 @@ MobileClient::MobileClient(const std::string& module_name)
       _is_registered(false) {
 }
 
+bool MobileClient::answer() {
+  if (!_is_registered) {
+    std::cout << "You are not registered. Register before doing any other action.\n";
+    return false;
+  }
+  std::string callee_incoming_number_path = getPath(kIncomingNumberPath, _number);
+  std::string callee_incoming_number;
+  _netconf_agent->fetchData(callee_incoming_number_path, callee_incoming_number)
+  if (callee_incoming_number.empty()) {
+    std::cout << "No incoming call.\n";
+    return false;
+  }
+  std::string callee_status_path = getPath(kStatusPath, _number);
+  std::string caller_status_path = getPath(kStatusPath, callee_incoming_number);
+  _netconf_agent->changeData(callee_status_path, mapStatusToString(Status::Active));
+  _netconf_agent->changeData(caller_status_path, mapStatusToString(Status::Active));
+  return true;
+}
+
 bool MobileClient::call(const std::string& number) {
   if (!_is_registered) {
     std::cout << "You are not registered. Register before doing any other action.\n";
