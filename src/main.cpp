@@ -115,12 +115,11 @@ int main() {
         break;
       }
       case Action::Reject: {
-        Reject();
+        mobile_client.reject();
         break;
       }
       case Action::Exit: {
-        Exit();
-        break;
+        return 0;
       }
       default: {
         std::cout << command.name << ": command not found\n";
