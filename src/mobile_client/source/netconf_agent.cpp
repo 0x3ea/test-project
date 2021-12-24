@@ -21,6 +21,12 @@ bool NetConfAgent::changeData(const std::string& xpath, const std::string& value
   return true;
 }
 
+bool NetConfAgent::deleteData(const std::string& xpath) {
+  _sess.deleteItem(xpath.c_str());
+  _sess.applyChanges();
+  return true;
+}
+
 bool NetConfAgent::fetchData(const std::string& xpath, std::string& value) {
   auto data = _sess.getData(xpath.c_str());
   if (!data.has_value()) return false;

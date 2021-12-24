@@ -21,6 +21,7 @@ class MobileClient {
   bool handleModuleChange(const std::string& xpath, const std::string& value);
   bool registerSubscriber(const std::string& number);
   bool reject();
+  bool unregister();
 
  private:
   std::string getPath(const std::string& xpath, const std::string& number);

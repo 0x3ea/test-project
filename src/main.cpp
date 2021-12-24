@@ -95,7 +95,7 @@ int main() {
         break;
       }
       case Action::Unregister: {
-        Unregister();
+        mobile_client.unregister();
         break;
       }
       case Action::SetName: {

@@ -187,6 +187,27 @@ bool MobileClient::reject() {
   return true;
 }
 
+bool MobileClient::unregister() {
+  if (!_is_registered) {
+    std::cout << "You are not registered. Register before doing any other action.\n";
+    return false;
+  }
+  std::string subscriber_status_path = getPath(kStatusPath, _number);
+  std::string subscriber_status;
+  _netconf_agent->fetchData(subscriber_status_path, subscriber_status);
+  if (subscriber_status == mapStatusToString(Status::Busy) || subscriber_status == mapStatusToString(Status::Active)) {
+    std::cout << "End call before unregistering.\n";
+    return false;
+  }
+  std::string subscriber_path = getPath(kSubscriberPath, _number);
+  _netconf_agent->deleteData(subscriber_path);
+  _is_registered = false;
+  _status = "";
+  std::cout << "Subscriber with number '" << _number << "' has been successfully unregistered!\n";
+  _number = "";
+  return true;
+}
+
 std::string MobileClient::getPath(const std::string& xpath, const std::string& number) {
   std::string generated_path = xpath;
   auto found = generated_path.find("key");

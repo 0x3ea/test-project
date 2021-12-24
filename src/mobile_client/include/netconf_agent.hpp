@@ -19,6 +19,7 @@ class NetConfAgent {
   NetConfAgent(const std::string& module_name);
 
   bool changeData(const std::string& xpath, const std::string& value);
+  bool deleteData(const std::string& xpath);
   bool fetchData(const std::string& xpath, std::string& value);
   bool subscribeForModelChanges(const std::string& xpath, MobileClient& mobile_client);
 
