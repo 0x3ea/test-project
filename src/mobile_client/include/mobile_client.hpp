@@ -18,9 +18,11 @@ class MobileClient {
   bool answer();
   bool call(const std::string& number);
   bool callEnd();
+  std::string getName();
   bool handleModuleChange(const std::string& xpath, const std::string& value);
   bool registerSubscriber(const std::string& number);
   bool reject();
+  bool setName(const std::string& name);
   bool unregister();
 
  private:
@@ -30,6 +32,7 @@ class MobileClient {
 
   std::unique_ptr<NetConfAgent> _netconf_agent;
   bool _is_registered;
+  std::string _name;
   std::string _number;
   std::string _status;
 };

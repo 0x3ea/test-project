@@ -99,7 +99,7 @@ int main() {
         break;
       }
       case Action::SetName: {
-        SetName(command.argument);
+        mobile_client.setName(command.argument);
         break;
       }
       case Action::Call: {

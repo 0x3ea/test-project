@@ -111,6 +111,10 @@ bool MobileClient::callEnd() {
   return true;
 }
 
+std::string MobileClient::getName() {
+  return _name;
+}
+
 bool MobileClient::handleModuleChange(const std::string& xpath, const std::string& value) {
   if (xpath == getPath(kOutgoingNumberPath, _number) && !value.empty()) {
     std::cout << "Calling '" << value << "'...\n";
@@ -135,6 +139,10 @@ bool MobileClient::registerSubscriber(const std::string& number) {
     std::cout << "You are already registered.\n";
     return false;
   }
+  if (_name.empty()) {
+    std::cout << "Set your name before registering.\n";
+    return false;
+  }
   std::string subscriber_status_path = getPath(kStatusPath, number);
   std::string tmp;
   if (_netconf_agent->fetchData(subscriber_status_path, tmp)) {
@@ -142,11 +150,13 @@ bool MobileClient::registerSubscriber(const std::string& number) {
     return false;
   }
   std::string subscriber_path = getPath(kSubscriberPath, number);
+  std::string subscriber_name_path = getPath(kUserNamePath, number);
   _netconf_agent->changeData(subscriber_path, number);
   _is_registered = true;
   _number = number;
   _netconf_agent->fetchData(subscriber_status_path, _status);
   _netconf_agent->subscribeForModelChanges(subscriber_path, *this);
+  _netconf_agent->registerOperData(subscriber_name_path, *this);
   std::cout << "Subscriber with number '" << number << "' has been successfully registered!\n";
   return true;
 }
@@ -184,6 +194,12 @@ bool MobileClient::reject() {
   _netconf_agent->changeData(subscriber_outgoing_number_path, "");
   _netconf_agent->changeData(subscriber_incoming_number_path, "");
   _netconf_agent->changeData(subscriber_status_path, mapStatusToString(Status::Idle));
+  return true;
+}
+
+bool MobileClient::setName(const std::string& name) {
+  _name = name;
+  std::cout << "Name '" << _name << "' has been successfully set!\n";
   return true;
 }
 

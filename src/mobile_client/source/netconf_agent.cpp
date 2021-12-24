@@ -3,6 +3,7 @@
 #include <libyang-cpp/DataNode.hpp>
 #include <sysrepo-cpp/Session.hpp>
 
+#include <optional>
 #include <string>
 
 #include "mobile_client.hpp"
@@ -31,6 +32,15 @@ bool NetConfAgent::fetchData(const std::string& xpath, std::string& value) {
   auto data = _sess.getData(xpath.c_str());
   if (!data.has_value()) return false;
   value = data->findPath(xpath.c_str())->asTerm().valueStr();
+  return true;
+}
+
+bool NetConfAgent::registerOperData(const std::string& xpath, MobileClient& mobile_client) {
+  sysrepo::OperGetItemsCb oper_get_items_cb = [&] (sysrepo::Session, auto, auto, auto, auto, auto, std::optional<libyang::DataNode>& parent) -> sysrepo::ErrorCode {
+    parent = _sess.getContext().newPath(xpath.c_str(), mobile_client.getName().c_str());
+    return sysrepo::ErrorCode::Ok;
+  };
+  _oper_sub = _sess.onOperGetItems(_module_name.c_str(), oper_get_items_cb, xpath.c_str());
   return true;
 }
 
